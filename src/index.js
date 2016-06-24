@@ -4,6 +4,7 @@ import React, { Component, PropTypes } from 'react'
 import ReactDOM from 'react-dom'
 import classname from 'classnames'
 import cssStyle from './style'
+import browser from 'detect-browser'
 
 class ReactTooltip extends Component {
   /**
@@ -261,9 +262,7 @@ class ReactTooltip extends Component {
     } else {
       tooltipText = originTooltip.split(regexp).map((d, i) => {
         multilineCount += 1
-        return (
-          <span key={i} className='multi-line'>{d}</span>
-        )
+        return (<span key={i} className='multi-line'>{d}</span>)
       })
     }
     /* Define extra class */
@@ -357,7 +356,7 @@ class ReactTooltip extends Component {
     const tipHeight = node.clientHeight
     const targetWidth = currentTarget.clientWidth
     const targetHeight = currentTarget.clientHeight
-    const windoWidth = window.innerWidth
+    const windowWidth = window.innerWidth
     const windowHeight = window.innerHeight
     let x
     let y
@@ -378,8 +377,12 @@ class ReactTooltip extends Component {
     }
 
     if (currentParent) {
-      parentTop = currentParent.getBoundingClientRect().top
-      parentLeft = currentParent.getBoundingClientRect().left
+      // If browser is IE (in standards mode...) with fixed/absolute parents, we don't set the parent origin.
+      // && currentParent.style.position !== 'absolute') ???
+      if (browser.name !== 'ie' || currentParent.style.position !== 'fixed') {
+        parentTop = currentParent.getBoundingClientRect().top
+        parentLeft = currentParent.getBoundingClientRect().left
+      }
     }
 
     const outsideTop = () => {
@@ -395,7 +398,7 @@ class ReactTooltip extends Component {
     }
 
     const outsideRight = () => {
-      return targetLeft + targetWidth + tipWidth + 25 > windoWidth
+      return targetLeft + targetWidth + tipWidth + 25 > windowWidth
     }
 
     const getTopPositionY = () => {
