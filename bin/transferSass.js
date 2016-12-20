@@ -15,13 +15,15 @@ function transferSass () {
       if (err) {
         console.error(err)
       }
-      console.log('css file has been transformed successful')
+      console.log('css file has been transformed successfully')
+      process.exit()
     })
   })
 }
 
 transferSass()
 
+console.log('Watching scss file...')
 fs.watch(path.resolve(__dirname, '../src/index.scss'), function (event, filename) {
   console.log(event, filename)
   transferSass()
